@@ -9,6 +9,12 @@ case study focused on:
 - portfolio monitoring through PSI, vintage curves, and survival views
 - governance through proxy-risk exclusions and missingness controls
 
+Live site:
+
+- portfolio home: [https://hc-risk-eight.vercel.app](https://hc-risk-eight.vercel.app)
+- full analysis: [https://hc-risk-eight.vercel.app/analysis](https://hc-risk-eight.vercel.app/analysis)
+- sample borrower trace: [https://hc-risk-eight.vercel.app/borrowers/182619](https://hc-risk-eight.vercel.app/borrowers/182619)
+
 The web surfaces are split on purpose:
 
 - `/` is a hiring-oriented portfolio summary
