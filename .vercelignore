@@ -1,0 +1,15 @@
+.codex-tmp
+.pytest_cache
+.venv
+__pycache__
+*.mov
+*.mp4
+catboost_info
+dataset
+data/trakindo_showcase
+data/web_lookup.db
+notebooks
+outputs
+paper
+tests
+trakindo_showcase

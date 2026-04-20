@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vintage Monitor SQL</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page-chrome">
+      <div class="page-glow page-glow-left"></div>
+      <div class="page-glow page-glow-right"></div>
+    </div>
+
+    <header class="masthead">
+      <div class="masthead-mark">
+        <span class="eyebrow">HC-RISK</span>
+        <span class="slash"></span>
+        <span class="eyebrow">VINTAGE MONITOR SQL</span>
+        <span class="owner-badge">Bramastya Zaki</span>
+      </div>
+      <nav class="masthead-nav">
+        <a href="/">Portfolio Home</a>
+        <a href="/analysis">Full Analysis</a>
+      </nav>
+    </header>
+
+    <main class="site-main">
+      <section class="section-grid">
+        <div class="section-label">
+          <p>SQL</p>
+          <span>Vintage</span>
+        </div>
+        <div class="section-body">
+          <div class="section-heading">
+            <h2>Vintage Monitoring Query</h2>
+            <p>Warehouse-style SQL for cohort seasoning and early-delinquency monitoring.</p>
+          </div>
+          <article class="panel panel-span">
+            <span class="panel-tag">SQL</span>
+            <pre class="vision-output">WITH booked_loans AS (
+    SELECT
+        loan_id,
+        borrower_id,
+        DATE_TRUNC('month', booked_at) AS booked_month,
+        booked_at,
+        approved_amount
+    FROM risk.loan_originations
+    WHERE booked_at &gt;= CURRENT_DATE - INTERVAL '18 months'
+),
+first_severe_dpd AS (
+    SELECT
+        repayment.loan_id,
+        MIN(repayment.mob) AS first_30dpd_mob
+    FROM risk.repayment_events AS repayment
+    WHERE repayment.days_past_due &gt;= 30
+    GROUP BY repayment.loan_id
+),
+loan_perf AS (
+    SELECT
+        loans.loan_id,
+        loans.borrower_id,
+        loans.booked_month,
+        loans.approved_amount,
+        COALESCE(events.first_30dpd_mob, 999) AS first_30dpd_mob,
+        CASE WHEN events.first_30dpd_mob IS NULL THEN 0 ELSE 1 END AS severe_dpd_event
+    FROM booked_loans AS loans
+    LEFT JOIN first_severe_dpd AS events
+        ON loans.loan_id = events.loan_id
+),
+mob_curve AS (
+    SELECT
+        perf.booked_month,
+        mob.mob,
+        COUNT(*) AS loans_in_cohort,
+        AVG(
+            CASE
+                WHEN perf.severe_dpd_event = 1
+                     AND perf.first_30dpd_mob &lt;= mob.mob THEN 1.0
+                ELSE 0.0
+            END
+        ) AS cumulative_30dpd_rate
+    FROM loan_perf AS perf
+    CROSS JOIN (
+        SELECT 1 AS mob UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL
+        SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL
+        SELECT 9 UNION ALL SELECT 10 UNION ALL SELECT 11 UNION ALL SELECT 12
+    ) AS mob
+    GROUP BY perf.booked_month, mob.mob
+)
+SELECT
+    booked_month,
+    mob,
+    loans_in_cohort,
+    cumulative_30dpd_rate,
+    LAG(cumulative_30dpd_rate) OVER (
+        PARTITION BY booked_month
+        ORDER BY mob
+    ) AS prior_mob_rate,
+    AVG(cumulative_30dpd_rate) OVER (
+        PARTITION BY booked_month
+        ORDER BY mob
+        ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
+    ) AS trailing_3mob_avg
+FROM mob_curve
+ORDER BY booked_month DESC, mob;</pre>
+          </article>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

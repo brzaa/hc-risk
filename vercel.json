@@ -1,0 +1,97 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "version": 2,
+  "cleanUrls": true,
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/index.py"
+    },
+    {
+      "src": "/borrowers/(.*)",
+      "dest": "/api/index.py"
+    },
+    {
+      "src": "/borrower",
+      "dest": "/api/index.py"
+    },
+    {
+      "src": "/data/plots/(.*)",
+      "dest": "/data/plots/$1"
+    },
+    {
+      "src": "/docs-risk-memo",
+      "dest": "/analysis"
+    },
+    {
+      "src": "/sql-vintage-monitor",
+      "dest": "/analysis"
+    },
+    {
+      "src": "/sql-portfolio-kri",
+      "dest": "/analysis"
+    },
+    {
+      "src": "/infra-architecture",
+      "dest": "/analysis"
+    },
+    {
+      "src": "/docs/risk-memo.md",
+      "dest": "/analysis"
+    },
+    {
+      "src": "/sql/vintage_monitor.sql",
+      "dest": "/analysis"
+    },
+    {
+      "src": "/sql/portfolio_kri.sql",
+      "dest": "/analysis"
+    },
+    {
+      "src": "/infra/architecture.md",
+      "dest": "/analysis"
+    },
+    {
+      "src": "/risk-memo",
+      "dest": "/analysis"
+    },
+    {
+      "src": "/vintage-monitor-sql",
+      "dest": "/analysis"
+    },
+    {
+      "src": "/portfolio-kri-sql",
+      "dest": "/analysis"
+    },
+    {
+      "src": "/architecture-note",
+      "dest": "/analysis"
+    },
+    {
+      "src": "/analysis",
+      "dest": "/analysis.html"
+    },
+    {
+      "src": "/credit-risk-review",
+      "dest": "/analysis.html"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/",
+      "dest": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/data/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Consumer Lending Risk Portfolio</title>
+    <meta
+      name="description"
+      content="A credit-risk portfolio focused on origination policy, calibration, monitoring, governance, and borrower-level traceability."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page-chrome">
+      <div class="page-glow page-glow-left"></div>
+      <div class="page-glow page-glow-right"></div>
+    </div>
+
+    <header class="masthead">
+      <div class="masthead-mark">
+        <span class="eyebrow">HC-RISK</span>
+        <span class="slash"></span>
+        <span class="eyebrow">CONSUMER LENDING PORTFOLIO</span>
+        <span class="owner-badge">Bramastya Zaki</span>
+      </div>
+      <nav class="masthead-nav">
+        <a href="#project">Case Study</a>
+        <a href="#lifecycle">Lifecycle</a>
+        <a href="#strategy">Strategy</a>
+        <a href="#artifacts">Artifacts</a>
+        <a href="/analysis">Full Analysis</a>
+      </nav>
+    </header>
+
+    <main class="site-main">
+      <section class="hero" id="project">
+        <div class="hero-copy">
+          <p class="kicker">Consumer Lending Risk / Portfolio Review</p>
+          <h1>Explainable underwriting, monitoring, and borrower trace in one case study.</h1>
+          <p class="hero-lead">
+            This portfolio reframes the Home Credit data into a consumer lending
+            risk case study centered on policy bands, calibration, portfolio
+            monitoring, fairness-minded governance, and borrower-level review.
+          </p>
+          <div class="hero-actions">
+            <a class="ghost-button" href="/analysis">Open Full Analysis</a>
+            <a class="ghost-button ghost-button-muted" href="/analysis#lifecycle">Open Lifecycle View</a>
+            <a class="ghost-button ghost-button-muted" href="/analysis#governance">Open Governance Review</a>
+            <a class="ghost-button ghost-button-muted" href="/borrowers/182619">Open Borrower Trace</a>
+          </div>
+        </div>
+        <div class="hero-metrics">
+          <div class="score-chip">
+            <span>Train Rows</span>
+            <strong>307,511</strong>
+          </div>
+          <div class="score-chip">
+            <span>Default Rate</span>
+            <strong>8.07%</strong>
+          </div>
+          <div class="score-chip">
+            <span>Scorecard AUC</span>
+            <strong>0.856</strong>
+          </div>
+          <div class="score-chip">
+            <span>Max PSI</span>
+            <strong>0.086</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-grid" id="fit">
+        <div class="section-label">
+          <p>00</p>
+          <span>Role Fit</span>
+        </div>
+        <div class="section-body">
+          <div class="section-heading">
+            <h2>Built to look like lending-risk work rather than a modeling demo.</h2>
+            <p>
+              The portfolio is framed around origination policy, monitoring
+              discipline, calibration, governance, and borrower review. The goal
+              is to show risk operations thinking, not just a trained model.
+            </p>
+          </div>
+          <div class="panel-grid panel-grid-wide">
+            <article class="panel statement-panel">
+              <span class="panel-tag">Risk Analytics & Insights</span>
+              <p class="panel-copy">
+                Portfolio shape, missingness, drift, capacity versus willingness,
+                vintage seasoning, and survival behavior are surfaced before any
+                policy claim is made.
+              </p>
+            </article>
+            <article class="panel statement-panel">
+              <span class="panel-tag">Policy & Strategy</span>
+              <p class="panel-copy">
+                Approve, manual review, and decline bands are tied to score
+                deciles, while PSI, vintage, and challenger thresholds are shown
+                as operational triggers.
+              </p>
+            </article>
+            <article class="panel statement-panel">
+              <span class="panel-tag">Governance & Explainability</span>
+              <p class="panel-copy">
+                Reason codes, calibration checks, proxy-risk exclusions, and
+                missingness governance keep the scorecard usable in analyst and
+                policy review.
+              </p>
+            </article>
+            <article class="panel statement-panel">
+              <span class="panel-tag">Cross-Functional Communication</span>
+              <p class="panel-copy">
+                The same artifacts support analytics, risk policy, collections
+                discussion, and borrower-level walkthroughs without changing the
+                narrative.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-grid" id="lifecycle">
+        <div class="section-label">
+          <p>01</p>
+          <span>Lifecycle</span>
+        </div>
+        <div class="section-body">
+          <div class="section-heading">
+            <h2>The project is organized around the lending lifecycle.</h2>
+            <p>
+              The case study maps data work, score generation, and monitoring to
+              the same lifecycle a lending team would review in practice.
+            </p>
+          </div>
+
+          <article class="panel panel-span">
+            <span class="panel-tag">Lifecycle View</span>
+            <div class="mece-grid">
+              <div class="mece-card">
+                <span>01</span>
+                <h3>Pre-Loan</h3>
+                <p>Application, bureau, and prior-loan features support origination ranking, policy bands, and reviewable adverse-action style reasons.</p>
+              </div>
+              <div class="mece-card">
+                <span>02</span>
+                <h3>In-Loan</h3>
+                <p>Capacity-versus-willingness framing, PSI drift, vintage curves, and survival views make deterioration visible after booking.</p>
+              </div>
+              <div class="mece-card">
+                <span>03</span>
+                <h3>Post-Loan</h3>
+                <p>Borrower traces show how stressed profiles, late-payment behavior, and refusal history can feed collections or manual review.</p>
+              </div>
+              <div class="mece-card">
+                <span>04</span>
+                <h3>Fraud Extension</h3>
+                <p>Application velocity, identity consistency, bureau inquiry bursts, and device/session anomalies are called out as the natural next overlay.</p>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-grid" id="strategy">
+        <div class="section-label">
+          <p>02</p>
+          <span>Strategy</span>
+        </div>
+        <div class="section-body">
+          <div class="section-heading">
+            <h2>Policy and governance are treated as first-class outputs.</h2>
+            <p>
+              The project is intentionally explicit about what the score means,
+              how it gets monitored, and which controls sit around it.
+            </p>
+          </div>
+
+          <article class="panel panel-span">
+            <span class="panel-tag">Policy Layer</span>
+            <div class="list-block compact-list">
+              <div class="list-row"><span>Approve</span><strong>Fast-track safer score bands with hard-policy overrides kept separate from the model.</strong></div>
+              <div class="list-row"><span>Manual Review</span><strong>Route mid-risk bands to affordability checks, missing-document review, or analyst second look.</strong></div>
+              <div class="list-row"><span>Decline</span><strong>Escalate the riskiest deciles to decline or challenger review when adverse signals cluster.</strong></div>
+            </div>
+          </article>
+
+          <div class="panel-grid panel-grid-wide">
+            <article class="panel">
+              <span class="panel-tag">Monitoring Trigger</span>
+              <p class="panel-copy">
+                PSI is tracked as a trigger, not a decorative metric. Watch at
+                0.10, block at 0.25, then re-bin or refresh the scorecard.
+              </p>
+            </article>
+            <article class="panel">
+              <span class="panel-tag">Vintage Trigger</span>
+              <p class="panel-copy">
+                Cohort deterioration is reviewed through 6-MOB seasoning so
+                origination and collections can react before losses accumulate.
+              </p>
+            </article>
+            <article class="panel">
+              <span class="panel-tag">Challenger Gate</span>
+              <p class="panel-copy">
+                A benchmark only launches if it beats the explainable scorecard
+                with acceptable calibration and governance, not on AUC alone.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-grid" id="artifacts">
+        <div class="section-label">
+          <p>03</p>
+          <span>Artifacts</span>
+        </div>
+        <div class="section-body">
+          <div class="section-heading">
+            <h2>Repo signals that support the case study.</h2>
+            <p>
+              The landing page stays concise. The deeper analysis, memo, SQL, and
+              architecture notes remain available for full inspection.
+            </p>
+          </div>
+
+          <div class="trace-grid">
+            <a class="trace-card" href="/analysis">
+              <span class="panel-tag">Interactive Analysis</span>
+              <h3>Full Review Surface</h3>
+              <p>Portfolio analysis, lifecycle framing, scorecard calibration, policy triggers, governance, and borrower traces.</p>
+            </a>
+            <a class="trace-card" href="/analysis#risk-memo-artifact">
+              <span class="panel-tag">Risk Memo</span>
+              <h3>Decision Narrative</h3>
+              <p>A short credit-risk memo written as if this were being handed to policy, analytics, and collections stakeholders.</p>
+            </a>
+            <a class="trace-card" href="/analysis#vintage-sql-artifact">
+              <span class="panel-tag">SQL Monitor</span>
+              <h3>Vintage Monitoring Query</h3>
+              <p>Example SQL for cohort seasoning and early-delinquency monitoring in a warehouse-style risk stack.</p>
+            </a>
+            <a class="trace-card" href="/analysis#portfolio-kri-artifact">
+              <span class="panel-tag">SQL KRI</span>
+              <h3>Portfolio KRI Query</h3>
+              <p>Key risk indicators for approval flow, booked exposure, manual review, PSI, and calibration-style monitoring.</p>
+            </a>
+            <a class="trace-card" href="/analysis#architecture-artifact">
+              <span class="panel-tag">Architecture</span>
+              <h3>Risk Stack Outline</h3>
+              <p>A lightweight architecture note covering ingestion, feature jobs, score generation, monitoring, and borrower trace surfaces.</p>
+            </a>
+            <a class="trace-card" href="/borrowers/182619">
+              <span class="panel-tag">Borrower Trace</span>
+              <h3>SK_ID_CURR 182619</h3>
+              <p>Jump straight into a borrower-level walkthrough that links profile, credit activity, and top scorecard reasons.</p>
+            </a>
+          </div>
+
+          <article class="panel panel-span statement-panel">
+            <span class="panel-tag">Current Structure</span>
+            <p class="panel-copy">
+              Root page: hiring-oriented credit-risk summary.<br />
+              <a class="inline-link" href="/analysis">/analysis</a>: full interactive case study.<br />
+              <a class="inline-link" href="/analysis#risk-memo-artifact">/analysis#risk-memo-artifact</a>,
+              <a class="inline-link" href="/analysis#vintage-sql-artifact">/analysis#vintage-sql-artifact</a>,
+              <a class="inline-link" href="/analysis#portfolio-kri-artifact">/analysis#portfolio-kri-artifact</a>,
+              <a class="inline-link" href="/analysis#architecture-artifact">/analysis#architecture-artifact</a>:
+              supporting operating artifacts.
+            </p>
+          </article>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

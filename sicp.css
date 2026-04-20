@@ -1,0 +1,481 @@
+:root {
+  --bg: #f4f0e8;
+  --bg-strong: rgba(255, 252, 246, 0.8);
+  --panel: rgba(255, 251, 245, 0.7);
+  --ink: #16120d;
+  --ink-soft: rgba(22, 18, 13, 0.74);
+  --line: rgba(22, 18, 13, 0.12);
+  --accent: #bd5a33;
+  --accent-strong: #8f3b16;
+  --green: #3f6757;
+  --gold: #c49a2c;
+  --shadow: 0 24px 60px rgba(47, 28, 10, 0.12);
+  --radius-xl: 28px;
+  --radius-lg: 22px;
+  --radius-md: 16px;
+  --content-width: min(1280px, calc(100vw - 40px));
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  font-family: "Space Grotesk", sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(189, 90, 51, 0.18), transparent 26%),
+    radial-gradient(circle at 85% 15%, rgba(63, 103, 87, 0.2), transparent 22%),
+    linear-gradient(180deg, #f7f1e7 0%, #ecdfcc 100%);
+  overflow-x: hidden;
+}
+
+body.antigravity {
+  background:
+    radial-gradient(circle at 20% 10%, rgba(83, 154, 255, 0.22), transparent 28%),
+    radial-gradient(circle at 85% 0%, rgba(255, 116, 116, 0.18), transparent 24%),
+    linear-gradient(180deg, #f4f7fb 0%, #e8edf7 100%);
+}
+
+.orbit {
+  position: fixed;
+  border-radius: 999px;
+  filter: blur(70px);
+  pointer-events: none;
+  opacity: 0.42;
+}
+
+.orbit-a {
+  width: 30rem;
+  height: 30rem;
+  background: rgba(189, 90, 51, 0.22);
+  left: -6rem;
+  top: -8rem;
+}
+
+.orbit-b {
+  width: 26rem;
+  height: 26rem;
+  background: rgba(63, 103, 87, 0.2);
+  right: -6rem;
+  top: 12rem;
+}
+
+body.antigravity .orbit-a,
+body.antigravity .orbit-b {
+  animation: drift 10s ease-in-out infinite alternate;
+}
+
+@keyframes drift {
+  from {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  to {
+    transform: translateY(-20px) rotate(8deg);
+  }
+}
+
+.topbar,
+.shell {
+  width: var(--content-width);
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.topbar {
+  padding: 22px 0 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.brand-mark {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(22, 18, 13, 0.08);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.brand-copy {
+  display: grid;
+}
+
+.brand-copy strong {
+  font-size: 1rem;
+}
+
+.brand-copy small,
+.text-link,
+.panel-copy,
+.lesson-summary,
+.concept-grid p,
+.reflection p,
+.rail-head p {
+  color: var(--ink-soft);
+}
+
+.topbar-actions,
+.hero-actions,
+.editor-actions,
+.pill-row,
+.result-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.text-link {
+  text-decoration: none;
+  font-size: 0.94rem;
+}
+
+.shell {
+  padding: 26px 0 80px;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 24px;
+  align-items: stretch;
+  padding: 42px 0 38px;
+}
+
+.eyebrow,
+.panel-tag,
+.lesson-pill small,
+.lesson-pill span,
+.editor-label {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.hero h1,
+.lesson-panel h2 {
+  margin: 0;
+  font-family: "Fraunces", serif;
+  font-weight: 400;
+  line-height: 0.95;
+}
+
+.hero h1 {
+  font-size: clamp(3.4rem, 9vw, 7rem);
+  max-width: 9ch;
+}
+
+.hero-lead {
+  max-width: 58ch;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+
+.hero-panel,
+.panel {
+  backdrop-filter: blur(18px);
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, 0.52);
+  box-shadow: var(--shadow);
+  border-radius: var(--radius-xl);
+}
+
+.hero-panel,
+.overview-grid,
+.studio {
+  display: grid;
+  gap: 18px;
+}
+
+.hero-panel {
+  padding: 22px;
+  align-content: start;
+}
+
+.metric {
+  display: grid;
+  gap: 6px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.metric:last-child {
+  border-bottom: 0;
+}
+
+.metric span,
+.result-card span {
+  color: var(--ink-soft);
+  font-size: 0.82rem;
+}
+
+.metric strong,
+.result-card strong {
+  font-size: 1.1rem;
+}
+
+.overview-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding-bottom: 20px;
+}
+
+.panel {
+  padding: 22px;
+}
+
+.simple-list {
+  margin: 12px 0 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 10px;
+  color: var(--ink-soft);
+}
+
+.pill {
+  display: inline-flex;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(22, 18, 13, 0.06);
+  border: 1px solid rgba(22, 18, 13, 0.08);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.84rem;
+}
+
+.studio {
+  grid-template-columns: 300px minmax(0, 1fr);
+  align-items: start;
+}
+
+.lesson-rail {
+  position: sticky;
+  top: 18px;
+}
+
+.rail-head {
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.lesson-list,
+.workbench,
+.concept-grid,
+.hint-list {
+  display: grid;
+  gap: 14px;
+}
+
+.lesson-pill {
+  width: 100%;
+  text-align: left;
+  border: 1px solid rgba(22, 18, 13, 0.08);
+  background: rgba(255, 255, 255, 0.48);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  display: grid;
+  gap: 6px;
+  cursor: pointer;
+  transition: transform 140ms ease, border-color 140ms ease, background-color 140ms ease;
+}
+
+.lesson-pill:hover,
+.lesson-pill:focus-visible,
+.primary-button:hover,
+.ghost-button:hover {
+  transform: translateY(-1px);
+}
+
+.lesson-pill.is-active {
+  border-color: rgba(189, 90, 51, 0.4);
+  background: rgba(189, 90, 51, 0.08);
+}
+
+.lesson-pill.is-complete {
+  border-color: rgba(63, 103, 87, 0.3);
+}
+
+.lesson-pill span {
+  color: var(--ink-soft);
+}
+
+.lesson-pill strong {
+  font-size: 0.98rem;
+}
+
+.lesson-pill small {
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+}
+
+.lesson-head,
+.editor-head,
+.solution-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: start;
+}
+
+.concept-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 14px;
+}
+
+.concept-grid h3 {
+  margin: 0 0 8px;
+  font-size: 0.92rem;
+}
+
+.reflection {
+  margin-top: 18px;
+  padding: 16px;
+  border-radius: var(--radius-md);
+  background: rgba(22, 18, 13, 0.04);
+}
+
+.primary-button,
+.ghost-button {
+  appearance: none;
+  border: 0;
+  min-height: 46px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.primary-button {
+  background: var(--accent);
+  color: white;
+  text-decoration: none;
+}
+
+.ghost-button {
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(22, 18, 13, 0.08);
+  color: var(--ink);
+}
+
+.editor-label {
+  display: inline-block;
+  margin: 16px 0 10px;
+  color: var(--ink-soft);
+}
+
+#code-editor,
+.console-output,
+.solution-output {
+  width: 100%;
+  border-radius: 20px;
+  border: 1px solid rgba(22, 18, 13, 0.1);
+  background: #16181d;
+  color: #f2efe8;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+#code-editor {
+  min-height: 360px;
+  resize: vertical;
+  padding: 18px;
+}
+
+.result-card {
+  flex: 1 1 150px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(22, 18, 13, 0.05);
+}
+
+.console-output,
+.solution-output {
+  min-height: 160px;
+  padding: 18px;
+  overflow: auto;
+  white-space: pre-wrap;
+}
+
+.hint-item {
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(22, 18, 13, 0.04);
+}
+
+.hint-item strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+details summary {
+  cursor: pointer;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+body.antigravity .panel,
+body.antigravity .hero-panel {
+  transform: translateY(-2px);
+}
+
+body.antigravity .brand-mark {
+  background: rgba(255, 255, 255, 0.82);
+}
+
+@media (max-width: 980px) {
+  .hero,
+  .overview-grid,
+  .studio,
+  .concept-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lesson-rail {
+    position: static;
+  }
+}
+
+@media (max-width: 720px) {
+  .topbar,
+  .lesson-head,
+  .editor-head,
+  .solution-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .shell {
+    padding-top: 8px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.8rem, 16vw, 4.5rem);
+  }
+
+  #code-editor {
+    min-height: 300px;
+  }
+}

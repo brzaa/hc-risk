@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hc-risk"
+version = "0.1.0"
+description = "Home Credit Default Risk three-stage modeling pipeline"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "numpy>=1.26",
+  "pandas>=2.0",
+  "scikit-learn>=1.4",
+]
+
+[project.optional-dependencies]
+boosting = [
+  "lightgbm>=4.0",
+  "xgboost>=2.0",
+  "catboost>=1.2",
+  "optuna>=3.0",
+  "shap>=0.45",
+]
+showcase = [
+  "plotly>=5.20",
+  "psycopg[binary]>=3.2",
+  "sqlalchemy>=2.0",
+  "streamlit>=1.43",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Suspicion Monitor</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --red: #ff2233;
+            --green: #00ff88;
+            --yellow: #ffcc00;
+            --blue: #4488ff;
+            --orange: #ff8800;
+            --purple: #aa44ff;
+            --bg: #080a0f;
+            --panel: #0d1117;
+            --border: #1a2332;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--green);
+            font-family: 'Share Tech Mono', monospace;
+            min-height: 100vh;
+            padding: 24px;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 255, 136, 0.012) 2px, rgba(0, 255, 136, 0.012) 4px);
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 8px;
+            color: var(--red);
+            text-transform: uppercase;
+        }
+
+        h1 span {
+            color: #333;
+        }
+
+        .live-badge {
+            font-size: 9px;
+            letter-spacing: 3px;
+            color: var(--red);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .live-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--red);
+            box-shadow: 0 0 10px var(--red);
+            animation: pulse 1.2s ease infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.2
+            }
+        }
+
+        /* Summary bar */
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr) auto;
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+
+        .summary-cell {
+            background: var(--panel);
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .summary-label {
+            font-size: 9px;
+            letter-spacing: 3px;
+            color: #445;
+        }
+
+        .summary-value {
+            font-family: 'Orbitron', monospace;
+            font-size: 24px;
+            font-weight: 900;
+        }
+
+        .risk-cell {
+            background: var(--panel);
+            padding: 16px 28px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+            min-width: 140px;
+        }
+
+        .risk-value {
+            font-family: 'Orbitron', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 3px;
+        }
+
+        .risk-bar {
+            width: 100%;
+            height: 3px;
+            background: #1a2332;
+            margin-top: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .risk-fill {
+            height: 100%;
+            transition: width 0.5s ease, background 0.5s ease;
+            width: 0%;
+        }
+
+        /* Event cards grid */
+        .section-title {
+            font-size: 9px;
+            letter-spacing: 5px;
+            color: #334;
+            margin-bottom: 12px;
+            margin-top: 20px;
+            text-transform: uppercase;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            padding: 18px;
+            position: relative;
+            overflow: hidden;
+            cursor: default;
+            transition: border-color 0.3s;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            transition: transform 0.4s ease, background 0.3s;
+            transform: scaleX(0);
+            transform-origin: left;
+        }
+
+        .card.triggered::after {
+            transform: scaleX(1);
+        }
+
+        .card.triggered {
+            border-color: rgba(255, 34, 51, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 14px;
+        }
+
+        .card-icon {
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        .card-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #1a2332;
+            transition: all 0.2s;
+        }
+
+        .card-dot.active {
+            box-shadow: 0 0 10px;
+            animation: pulse 0.8s ease infinite;
+        }
+
+        .card-label {
+            font-size: 9px;
+            letter-spacing: 4px;
+            color: #445;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .card-count {
+            font-family: 'Orbitron', monospace;
+            font-size: 42px;
+            font-weight: 900;
+            line-height: 1;
+            transition: color 0.2s;
+            margin-bottom: 6px;
+        }
+
+        .card-last {
+            font-size: 9px;
+            color: #334;
+            margin-bottom: 10px;
+            min-height: 14px;
+        }
+
+        .card-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 12px 0;
+        }
+
+        .card-desc {
+            font-size: 10px;
+            color: #445;
+            line-height: 1.7;
+        }
+
+        .card-stat {
+            display: flex;
+            justify-content: space-between;
+            font-size: 9px;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #0d1117;
+        }
+
+        .card-stat-label {
+            color: #334;
+        }
+
+        .card-stat-value {
+            color: #556;
+        }
+
+        /* Log section */
+        .log-container {
+            background: var(--panel);
+            border: 1px solid var(--border);
+        }
+
+        .log-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .log-title {
+            font-size: 9px;
+            letter-spacing: 4px;
+            color: #445;
+        }
+
+        .log-clear {
+            font-size: 9px;
+            letter-spacing: 2px;
+            color: #334;
+            cursor: pointer;
+            padding: 4px 10px;
+            border: 1px solid #1a2332;
+            background: none;
+            color: #445;
+            font-family: 'Share Tech Mono', monospace;
+            transition: all 0.2s;
+        }
+
+        .log-clear:hover {
+            border-color: var(--red);
+            color: var(--red);
+        }
+
+        .log-cols {
+            display: grid;
+            grid-template-columns: 90px 130px 160px 1fr 100px;
+            padding: 8px 20px;
+            font-size: 9px;
+            letter-spacing: 2px;
+            color: #223;
+            border-bottom: 1px solid #0d1117;
+        }
+
+        .log-entries {
+            height: 260px;
+            overflow-y: auto;
+        }
+
+        .log-entry {
+            display: grid;
+            grid-template-columns: 90px 130px 160px 1fr 100px;
+            padding: 7px 20px;
+            font-size: 10px;
+            border-bottom: 1px solid #0a0d12;
+            animation: slidein 0.25s ease;
+            align-items: center;
+        }
+
+        @keyframes slidein {
+            from {
+                opacity: 0;
+                transform: translateX(-6px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0)
+            }
+        }
+
+        .log-time {
+            color: #334;
+        }
+
+        .log-type-badge {
+            font-size: 8px;
+            letter-spacing: 2px;
+            padding: 2px 8px;
+            border: 1px solid;
+            display: inline-block;
+            width: fit-content;
+        }
+
+        .log-detail {
+            color: #556;
+        }
+
+        .log-duration {
+            color: #334;
+            font-size: 9px;
+        }
+
+        .log-since {
+            color: #334;
+            font-size: 9px;
+        }
+
+        .log-entries::-webkit-scrollbar {
+            width: 3px;
+        }
+
+        .log-entries::-webkit-scrollbar-track {
+            background: #0a0d12;
+        }
+
+        .log-entries::-webkit-scrollbar-thumb {
+            background: #1a2332;
+        }
+
+        /* Color themes per event type */
+        .c-blur {
+            color: var(--red);
+        }
+
+        .c-focus {
+            color: var(--green);
+        }
+
+        .c-hidden {
+            color: var(--yellow);
+        }
+
+        .c-visible {
+            color: var(--blue);
+        }
+
+        .c-copy {
+            color: var(--orange);
+        }
+
+        .c-paste {
+            color: var(--orange);
+        }
+
+        .c-cut {
+            color: var(--orange);
+        }
+
+        .c-keydown {
+            color: var(--purple);
+        }
+
+        .c-mouseleave {
+            color: #ff6688;
+        }
+
+        .c-mouseenter {
+            color: #44ffaa;
+        }
+
+        .c-contextmenu {
+            color: #ff4400;
+        }
+
+        .c-devtools {
+            color: var(--red);
+        }
+
+        .border-blur {
+            border-color: var(--red);
+        }
+
+        .border-focus {
+            border-color: var(--green);
+        }
+
+        .border-hidden {
+            border-color: var(--yellow);
+        }
+
+        .border-visible {
+            border-color: var(--blue);
+        }
+
+        .border-copy {
+            border-color: var(--orange);
+        }
+
+        .border-paste {
+            border-color: var(--orange);
+        }
+
+        .border-cut {
+            border-color: var(--orange);
+        }
+
+        .border-keydown {
+            border-color: var(--purple);
+        }
+
+        .border-mouseleave {
+            border-color: #ff6688;
+        }
+
+        .border-mouseenter {
+            border-color: #44ffaa;
+        }
+
+        .border-contextmenu {
+            border-color: #ff4400;
+        }
+
+        .border-devtools {
+            border-color: var(--red);
+        }
+
+        .bg-blur {
+            background: var(--red);
+        }
+
+        .bg-focus {
+            background: var(--green);
+        }
+
+        .bg-hidden {
+            background: var(--yellow);
+        }
+
+        .bg-visible {
+            background: var(--blue);
+        }
+
+        .bg-copy {
+            background: var(--orange);
+        }
+
+        .bg-paste {
+            background: var(--orange);
+        }
+
+        .bg-cut {
+            background: var(--orange);
+        }
+
+        .bg-keydown {
+            background: var(--purple);
+        }
+
+        .bg-mouseleave {
+            background: #ff6688;
+        }
+
+        .bg-mouseenter {
+            background: #44ffaa;
+        }
+
+        .bg-contextmenu {
+            background: #ff4400;
+        }
+
+        .bg-devtools {
+            background: var(--red);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1><span>//</span> SUSPICION MONITOR</h1>
+        <div class="live-badge">
+            <div class="live-dot"></div> MONITORING ACTIVE / BRAMASTYA ZAKI
+        </div>
+    </header>
+
+    <!-- Summary bar -->
+    <div class="summary">
+        <div class="summary-cell">
+            <div class="summary-label">Total Events</div>
+            <div class="summary-value" id="total" style="color:var(--green)">0</div>
+        </div>
+        <div class="summary-cell">
+            <div class="summary-label">Suspicious Events</div>
+            <div class="summary-value" id="suspicious" style="color:var(--red)">0</div>
+        </div>
+        <div class="summary-cell">
+            <div class="summary-label">Session Duration</div>
+            <div class="summary-value" id="duration" style="color:#aaa;font-size:20px;padding-top:4px">00:00</div>
+        </div>
+        <div class="summary-cell">
+            <div class="summary-label">Time Away</div>
+            <div class="summary-value" id="away-time" style="color:var(--yellow);font-size:20px;padding-top:4px">0s
+            </div>
+        </div>
+        <div class="risk-cell">
+            <div class="summary-label">Risk Level</div>
+            <div class="risk-value" id="risk-label" style="color:var(--green)">LOW</div>
+            <div class="risk-bar">
+                <div class="risk-fill" id="risk-fill" style="background:var(--green)"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cards -->
+    <div class="section-title">// Window & Tab Events</div>
+    <div class="cards-grid" id="grid-window"></div>
+
+    <div class="section-title">// Keyboard & Mouse Events</div>
+    <div class="cards-grid" id="grid-input"></div>
+
+    <div class="section-title">// Clipboard & Context Events</div>
+    <div class="cards-grid" id="grid-clipboard"></div>
+
+    <!-- Log -->
+    <div class="log-container">
+        <div class="log-header">
+            <div class="log-title">// Event Log</div>
+            <button class="log-clear" onclick="clearLog()">CLEAR LOG</button>
+        </div>
+        <div class="log-cols">
+            <span>TIME</span><span>EVENT TYPE</span><span>DETAIL</span><span>DESCRIPTION</span><span>DURATION/GAP</span>
+        </div>
+        <div class="log-entries" id="log-entries"></div>
+    </div>
+
+    <script>
+        // ── Event definitions ──────────────────────────────────────────
+        const EVENT_DEFS = {
+            blur: {
+                label: 'Window Blur', icon: '👁', color: 'blur', suspicious: true,
+                desc: 'Fires when the browser window loses focus. Indicates user clicked on another application (e.g. Cluely, terminal, notes). Does NOT fire on tab switch.',
+                what: 'Window clicked away',
+                why: 'High suspicion — user left your app entirely'
+            },
+            focus: {
+                label: 'Window Focus', icon: '🔁', color: 'focus', suspicious: false,
+                desc: 'Fires when the browser window regains focus after being blurred. Paired with blur events to calculate time spent outside the window.',
+                what: 'Window regained focus',
+                why: 'Neutral — user returned to window'
+            },
+            hidden: {
+                label: 'Tab Hidden', icon: '🫥', color: 'hidden', suspicious: true,
+                desc: 'Fires via visibilitychange API when the tab is no longer visible. Triggers on: tab switch, minimize, phone lock, switching to another app on mobile.',
+                what: 'Tab became invisible',
+                why: 'High suspicion — tab switched or minimized'
+            },
+            visible: {
+                label: 'Tab Visible', icon: '👀', color: 'visible', suspicious: false,
+                desc: 'Fires via visibilitychange when the tab becomes visible again. Paired with hidden to calculate total time the tab was not in view.',
+                what: 'Tab became visible',
+                why: 'Neutral — user came back to tab'
+            },
+            mouseleave: {
+                label: 'Mouse Left Page', icon: '🖱', color: 'mouseleave', suspicious: true,
+                desc: 'Fires when mouse cursor exits the browser viewport. Could indicate user moving to another window or monitor without clicking (keyboard-driven tools like Cluely).',
+                what: 'Cursor left viewport',
+                why: 'Medium suspicion — possible screen overlay use'
+            },
+            mouseenter: {
+                label: 'Mouse Entered', icon: '↩', color: 'mouseenter', suspicious: false,
+                desc: 'Fires when the mouse cursor re-enters the browser viewport after leaving. Paired with mouseleave to track how long mouse was outside the page.',
+                what: 'Cursor re-entered viewport',
+                why: 'Neutral — mouse returned to page'
+            },
+            keydown: {
+                label: 'Suspicious Keys', icon: '⌨', color: 'keydown', suspicious: true,
+                desc: 'Tracks specific suspicious key combos: Alt+Tab (app switch), Cmd/Ctrl+Tab (tab switch), PrintScreen (screenshot), and function keys often used by overlay apps.',
+                what: 'Suspicious key combo pressed',
+                why: 'Medium suspicion — hotkey or screenshot attempt'
+            },
+            copy: {
+                label: 'Copy Event', icon: '📋', color: 'copy', suspicious: true,
+                desc: 'Fires when user copies content (Ctrl+C / Cmd+C). In exam/interview context this may indicate copying questions to paste into an AI tool.',
+                what: 'Content copied to clipboard',
+                why: 'Medium suspicion — possible data exfiltration'
+            },
+            cut: {
+                label: 'Cut Event', icon: '✂', color: 'cut', suspicious: true,
+                desc: 'Fires when user cuts content (Ctrl+X / Cmd+X). Similar to copy — content removed and placed in clipboard, potentially sent elsewhere.',
+                what: 'Content cut to clipboard',
+                why: 'Medium suspicion'
+            },
+            paste: {
+                label: 'Paste Event', icon: '📌', color: 'paste', suspicious: true,
+                desc: 'Fires when user pastes content (Ctrl+V / Cmd+V). Could mean pasting AI-generated answers from another tool into the page.',
+                what: 'Content pasted from clipboard',
+                why: 'High suspicion — possible AI-assisted answer'
+            },
+            contextmenu: {
+                label: 'Right Click', icon: '🖱', color: 'contextmenu', suspicious: false,
+                desc: 'Fires when user right-clicks anywhere on the page. Could indicate attempting to use browser inspect tools, or just normal behavior.',
+                what: 'Right-click context menu opened',
+                why: 'Low suspicion — could be normal'
+            },
+        }
+
+        // ── State ──────────────────────────────────────────────────────
+        const counts = {}
+        const lastSeen = {}
+        const lastTimestamps = {}
+        let totalEvents = 0
+        let suspiciousCount = 0
+        let awayStart = null
+        let totalAwayMs = 0
+        const startTime = Date.now()
+
+        // ── Build cards ────────────────────────────────────────────────
+        function buildCards() {
+            const windowTypes = ['blur', 'focus', 'hidden', 'visible']
+            const inputTypes = ['mouseleave', 'mouseenter', 'keydown']
+            const clipboardTypes = ['copy', 'cut', 'paste', 'contextmenu']
+
+            function makeCard(type) {
+                const def = EVENT_DEFS[type]
+                const card = document.createElement('div')
+                card.className = 'card'
+                card.id = `card-${type}`
+                card.innerHTML = `
+        <div class="card::after bg-${def.color}"></div>
+        <div class="card-header">
+          <span class="card-icon">${def.icon}</span>
+          <span class="card-dot" id="dot-${type}"></span>
+        </div>
+        <div class="card-label">${def.label} ${def.suspicious ? '⚠' : ''}</div>
+        <div class="card-count c-${def.color}" id="count-${type}">0</div>
+        <div class="card-last" id="last-${type}">—</div>
+        <div class="card-divider"></div>
+        <div class="card-desc">${def.desc}</div>
+        <div class="card-stat">
+          <span class="card-stat-label">WHAT</span>
+          <span class="card-stat-value">${def.what}</span>
+        </div>
+        <div class="card-stat">
+          <span class="card-stat-label">WHY FLAG</span>
+          <span class="card-stat-value" style="color:${def.suspicious ? 'var(--red)' : '#556'}">${def.why}</span>
+        </div>
+      `
+                // inject top border color via JS since CSS vars needed
+                card.style.setProperty('--card-color', `var(--${def.color === 'blur' || def.color === 'red' ? 'red' : def.color})`)
+                return card
+            }
+
+            windowTypes.forEach(t => document.getElementById('grid-window').appendChild(makeCard(t)))
+            inputTypes.forEach(t => document.getElementById('grid-input').appendChild(makeCard(t)))
+            clipboardTypes.forEach(t => document.getElementById('grid-clipboard').appendChild(makeCard(t)))
+        }
+
+        buildCards()
+
+        // ── Helpers ────────────────────────────────────────────────────
+        function ts() {
+            return new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })
+        }
+
+        function timeSince(ms) {
+            if (!ms) return '—'
+            const s = Math.floor((Date.now() - ms) / 1000)
+            if (s < 60) return `${s}s ago`
+            return `${Math.floor(s / 60)}m ${s % 60}s ago`
+        }
+
+        function fmtMs(ms) {
+            if (!ms) return '—'
+            const s = Math.floor(ms / 1000)
+            if (s < 60) return `${s}s`
+            return `${Math.floor(s / 60)}m ${s % 60}s`
+        }
+
+        function flash(type) {
+            const dot = document.getElementById(`dot-${type}`)
+            const card = document.getElementById(`card-${type}`)
+            const def = EVENT_DEFS[type]
+            dot.classList.add('active', `c-${def.color}`)
+            dot.style.background = `var(--${def.color === 'mouseleave' ? 'red' : def.color})`
+            card.classList.add('triggered')
+            card.style.borderTopColor = 'transparent'
+            card.style.setProperty('--top-color', 'red')
+            setTimeout(() => {
+                dot.classList.remove('active')
+                card.classList.remove('triggered')
+            }, 900)
+        }
+
+        function addLog(type, detail, duration) {
+            const def = EVENT_DEFS[type]
+            const entry = document.createElement('div')
+            entry.className = 'log-entry'
+            const gap = lastTimestamps[type] ? fmtMs(Date.now() - lastTimestamps[type]) : '—'
+            entry.innerHTML = `
+      <span class="log-time">${ts()}</span>
+      <span><span class="log-type-badge c-${def.color} border-${def.color}">${type.toUpperCase()}</span></span>
+      <span class="log-detail">${detail || def.what}</span>
+      <span class="log-detail" style="color:#334">${def.suspicious ? '⚠ ' : ''}${def.why}</span>
+      <span class="log-duration">${duration ? `away: ${fmtMs(duration)}` : `gap: ${gap}`}</span>
+    `
+            const container = document.getElementById('log-entries')
+            container.prepend(entry)
+            lastTimestamps[type] = Date.now()
+        }
+
+        function updateRisk() {
+            const score = suspiciousCount
+            const pct = Math.min(100, score * 5)
+            const fill = document.getElementById('risk-fill')
+            const label = document.getElementById('risk-label')
+            fill.style.width = pct + '%'
+            if (score >= 20) {
+                fill.style.background = 'var(--red)'
+                label.style.color = 'var(--red)'
+                label.textContent = 'CRITICAL'
+            } else if (score >= 10) {
+                fill.style.background = 'var(--red)'
+                label.style.color = 'var(--red)'
+                label.textContent = 'HIGH'
+            } else if (score >= 5) {
+                fill.style.background = 'var(--yellow)'
+                label.style.color = 'var(--yellow)'
+                label.textContent = 'MEDIUM'
+            } else {
+                fill.style.background = 'var(--green)'
+                label.style.color = 'var(--green)'
+                label.textContent = 'LOW'
+            }
+        }
+
+        function trigger(type, detail, duration) {
+            const def = EVENT_DEFS[type]
+            counts[type] = (counts[type] || 0) + 1
+            lastSeen[type] = Date.now()
+            totalEvents++
+            if (def.suspicious) suspiciousCount++
+
+            document.getElementById(`count-${type}`).textContent = counts[type]
+            document.getElementById(`last-${type}`).textContent = `Last: just now · Total: ${counts[type]}`
+            document.getElementById('total').textContent = totalEvents
+            document.getElementById('suspicious').textContent = suspiciousCount
+
+            flash(type)
+            addLog(type, detail, duration)
+            updateRisk()
+        }
+
+        // ── Tick to update "last seen" ────────────────────────────────
+        setInterval(() => {
+            Object.keys(lastSeen).forEach(type => {
+                const el = document.getElementById(`last-${type}`)
+                if (el) el.textContent = `Last: ${timeSince(lastSeen[type])} · Total: ${counts[type] || 0}`
+            })
+        }, 5000)
+
+        // ── Duration & away time ───────────────────────────────────────
+        setInterval(() => {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000)
+            const m = String(Math.floor(elapsed / 60)).padStart(2, '0')
+            const s = String(elapsed % 60).padStart(2, '0')
+            document.getElementById('duration').textContent = `${m}:${s}`
+
+            const total = awayStart ? totalAwayMs + (Date.now() - awayStart) : totalAwayMs
+            document.getElementById('away-time').textContent = fmtMs(total)
+        }, 1000)
+
+        // ── Event listeners ────────────────────────────────────────────
+        let blurTime = null
+        window.addEventListener('blur', () => {
+            blurTime = Date.now()
+            awayStart = Date.now()
+            trigger('blur', 'App focus lost')
+        })
+
+        window.addEventListener('focus', () => {
+            const duration = blurTime ? Date.now() - blurTime : null
+            if (awayStart) { totalAwayMs += Date.now() - awayStart; awayStart = null }
+            trigger('focus', 'App focus restored', duration)
+            blurTime = null
+        })
+
+        let hiddenTime = null
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                hiddenTime = Date.now()
+                awayStart = awayStart || Date.now()
+                trigger('hidden', 'Tab no longer visible')
+            } else {
+                const duration = hiddenTime ? Date.now() - hiddenTime : null
+                if (awayStart) { totalAwayMs += Date.now() - awayStart; awayStart = null }
+                trigger('visible', 'Tab visible again', duration)
+                hiddenTime = null
+            }
+        })
+
+        let mouseLeaveTime = null
+        document.addEventListener('mouseleave', () => {
+            mouseLeaveTime = Date.now()
+            trigger('mouseleave', 'Cursor exited browser viewport')
+        })
+
+        document.addEventListener('mouseenter', () => {
+            const duration = mouseLeaveTime ? Date.now() - mouseLeaveTime : null
+            trigger('mouseenter', 'Cursor returned to viewport', duration)
+            mouseLeaveTime = null
+        })
+
+        // Suspicious key combos only
+        const suspiciousKeys = new Set(['PrintScreen', 'F12'])
+        document.addEventListener('keydown', (e) => {
+            const isAltTab = e.altKey && e.key === 'Tab'
+            const isCmdTab = e.metaKey && e.key === 'Tab'
+            const isCtrlTab = e.ctrlKey && e.key === 'Tab'
+            const isPrintScreen = e.key === 'PrintScreen'
+            const isF12 = e.key === 'F12'
+            const isDevTools = (e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')
+
+            if (isAltTab || isCmdTab || isCtrlTab || isPrintScreen || isF12 || isDevTools) {
+                const combo = [
+                    e.ctrlKey && 'Ctrl', e.metaKey && 'Cmd', e.altKey && 'Alt',
+                    e.shiftKey && 'Shift', e.key
+                ].filter(Boolean).join('+')
+                trigger('keydown', `Key combo: ${combo}`)
+            }
+        })
+
+        document.addEventListener('copy', (e) => {
+            const sel = window.getSelection()?.toString().slice(0, 40)
+            trigger('copy', sel ? `Copied: "${sel}${sel.length >= 40 ? '…' : ''}"` : 'Content copied')
+        })
+
+        document.addEventListener('cut', () => trigger('cut', 'Content cut to clipboard'))
+
+        document.addEventListener('paste', (e) => {
+            const text = e.clipboardData?.getData('text')?.slice(0, 40)
+            trigger('paste', text ? `Pasted: "${text}${text.length >= 40 ? '…' : ''}"` : 'Content pasted')
+        })
+
+        document.addEventListener('contextmenu', (e) => {
+            trigger('contextmenu', `Right-click at (${e.clientX}, ${e.clientY})`)
+        })
+
+        function clearLog() {
+            document.getElementById('log-entries').innerHTML = ''
+        }
+    </script>
+</body>
+
+</html>
